@@ -1,0 +1,14 @@
+{
+	"name": "maths",
+	"version": "1.0.0",
+	"description": "maths functions to understand them better and cause it's fun lol",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index"
+	},
+	"keywords": [
+		"maths"
+	],
+	"author": "ArtInLines",
+	"license": "MIT"
+}
