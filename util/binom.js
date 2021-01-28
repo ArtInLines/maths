@@ -1,9 +1,9 @@
-module.exports = { pmf, cdf, cdfInterval, cdfMin, expectedVal, stdDeviation, binom };
+module.exports = { pmf, cdf, cdfInterval, cdfMin, mean, stdDeviation, binom, findp };
 
 const fact = require('./factorial');
 const { percentToDecimal } = require('./helper');
 
-function expectedVal(n, p) {
+function mean(n, p) {
 	return n * p;
 }
 
@@ -13,7 +13,7 @@ function stdDeviation({ n, p }) {
 }
 
 /** @return {Number} */
-function pmf({ n, p, x = null }) {
+function pmf({ n, p, x }) {
 	p = percentToDecimal(p);
 	x = Number(x);
 	n = Number(n);
@@ -52,4 +52,6 @@ function binom({ n, p, step = 1, begin = 0, end = n }) {
 	return res;
 }
 
-function findp({ n }) {}
+function findp({ n, mean = null }) {
+	if (typeof mean === 'number') return mean / n;
+}
