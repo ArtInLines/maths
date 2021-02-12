@@ -1,17 +1,23 @@
-const binom = require('./util/binom');
-const factorial = require('./util/factorial');
+const binom = require('./maths/probability/binom');
+const factorial = require('./maths/util/factorial');
 
-module.exports = {
-	// Binom functions
-	binom: binom.binom,
+// TODO: Add useful properties to the translation object, like help pages, etc.
+// Maybe add these properties directly connected to the functions, or something
+
+const obj = {
+	// Useful operations
+	fact: factorial,
+
+	// Binomial Distribution Functions
+	binom: { func: binom.binom, help: '' /* other useful properties */ },
 	binomPMF: binom.pmf,
 	binomCDF: binom.cdf,
 	binomCDFMin: binom.cdfMin,
 	binomInterval: binom.cdfInterval,
 	binomMean: binom.mean,
-	binomDev: binom.stdDeviation,
+	binomSigma: binom.stdDeviation,
+	binomSTDDeviation: binom.stdDeviation,
 	binomFindp: binom.findp,
-
-	// Useful operations
-	fact: factorial,
 };
+
+module.exports = obj;
