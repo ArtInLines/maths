@@ -1,7 +1,7 @@
 module.exports = { pmf, pdf, cdf, cdfInterval, cdfMin, cdfMax, mean, stdDeviation, binom, findp };
 
-const fact = require('../util/factorial');
-const { percentToDecimal } = require('../util/helper');
+const fact = require('../util/funcs');
+const { percentToDecimal } = require('../util/transforms');
 
 function mean({ n, p }) {
 	return n * p;
