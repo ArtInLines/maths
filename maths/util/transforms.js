@@ -172,16 +172,35 @@ function strSplitOnceRight(str, splitVal) {
 /**
  * Split a String with several splitting values and options associated to each of them.
  * ```
- * strSplit('<str>', '<splitThisValue>', ['<splitThisValueOnce>', true], ['<splitTheFirstOccuranceOfThisValueFromRight>', true, true])
+ * strSplit('<str>', '<splitThisValue>', ['<splitThisValueOnce>', true], ['<splitTheFirstOccuranceOfThisValueFromRight>', true, true], ['<splitToStr>', false, false, true])
  * ```
  * @param {String} str
  * @param  {...String} splitVals
  * @returns {String[]}
  */
-function strSplit(str, ...splitVals) {}
+function strSplit(str, ...splitVals) {
+	let arr = [str];
+	splitVals.forEach((val) => {
+		for (let i = 0; i < arr.length; i++) {
+			let splitted = arr[i];
+			if (val?.[1] && val?.[2]) splitted = strSplitOnceRight(splitted, val[0]);
+			else if (val?.[1]) splitted = strSplitOnce(splitted, val[0]);
+			else if (Array.isArray(val)) splitted = splitted.split(val[0]);
+			else splitted = splitted.split(val);
+
+			if (val?.[3]) splitted = [strArrToStr(splitted)];
+
+			arr = [...arr.slice(0, i), ...splitted, ...arr.slice(i + 1)];
+			// i += splitted.length - 1;
+			console.log({ i, arr, splitted, val });
+		}
+	});
+	return arr;
+}
 
 function strSplitToStr(str, ...splitVals) {
-	return strSplit(str, ...splitVals).reduce((acc, current) => (acc += current));
+	let arr = strSplit(str, ...splitVals);
+	return arr.reduce((acc, current) => (acc += current));
 }
 
 /**
@@ -192,6 +211,7 @@ function strSplitToStr(str, ...splitVals) {
 function funcToStr(func) {
 	func = func.toString();
 	// TODO: Beautify func
+	return func;
 }
 
 /**
@@ -207,18 +227,21 @@ function strToFunc(str) {
 
 	if (arrowFunc.test(str)) {
 		str = str.split(' => ');
-		params = strSplitOnceRight(strSplitToStrOnce(strSplitToStr(str[0], ' '), '('), ')').split(',');
+		params = strSplit(str[0], [' ', false, false, true], ['(', true], [')', true, true], ',');
 		body = str[1];
 		if (body.startsWith('{')) body = strSplitToStr(body, '{', '}');
 		else body = 'return (' + body + ')';
 	} else {
-		str = strSplitOnce(strSplitToStrOnce(str, 'function', '('), ')');
+		str = strSplit(str, ['function', true, false, true], ['(', true, false, true], [')', true]);
+		console.log({ str });
 		params = str[0]
 			.slice(1)
 			.split(',')
 			.map((val) => strToVal(val));
 		body = strSplitOnceRight(strSplitOnce(str[1], '{'), '}');
 	}
+
+	console.log({ params, body });
 
 	params.push(body);
 	return new Function(...params);
