@@ -191,8 +191,8 @@ function strSplit(str, ...splitVals) {
 			if (val?.[3]) splitted = [strArrToStr(splitted)];
 
 			arr = [...arr.slice(0, i), ...splitted, ...arr.slice(i + 1)];
-			// i += splitted.length - 1;
-			console.log({ i, arr, splitted, val });
+			i += splitted.length - 1;
+			// console.log({ i, arr, splitted, val });
 		}
 	});
 	return arr;
@@ -215,7 +215,10 @@ function funcToStr(func) {
 }
 
 /**
+ * @deprecated
  * Turn a stringified JS Function into a valid JS Function.
+ * Functions as parameters are not yet supported.
+ * Doesn't work with
  * @param {String} str String representation of a JS Function
  * @returns {Function}
  */
@@ -227,21 +230,22 @@ function strToFunc(str) {
 
 	if (arrowFunc.test(str)) {
 		str = str.split(' => ');
-		params = strSplit(str[0], [' ', false, false, true], ['(', true], [')', true, true], ',');
+		// console.log({ str });
+		params = strSplit(str[0], [' ', false, false, true], ['(', true, false, true], [')', true, true, true], ',');
 		body = str[1];
-		if (body.startsWith('{')) body = strSplitToStr(body, '{', '}');
+		if (body.startsWith('{')) body = strSplit(body, ['{', true, false, true], ['}', true, true, true]);
 		else body = 'return (' + body + ')';
 	} else {
-		str = strSplit(str, ['function', true, false, true], ['(', true, false, true], [')', true]);
-		console.log({ str });
+		str = strSplit(str, ['function', true, false, true], ['(', true, false, true], [')', true, false, false]);
+		// console.log({ str });
 		params = str[0]
 			.slice(1)
 			.split(',')
 			.map((val) => strToVal(val));
-		body = strSplitOnceRight(strSplitOnce(str[1], '{'), '}');
+		body = strSplit(str[1], ['{', true, false, true], ['}', true, true, true]);
 	}
 
-	console.log({ params, body });
+	// console.log({ params, body });
 
 	params.push(body);
 	return new Function(...params);
